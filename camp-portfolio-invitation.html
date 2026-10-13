@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Camp Portfolio: would you come?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Caveat+Brush&family=Kalam:wght@300;400;700&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+<style>
+:root{--ink:#27408b;--kraft:#b98a58;--kraft2:#a77846;--ember:#ff9a3c;--fly:#e4f06b;--moss:#2d4a3b;--plum:#2a2144;--paper:#fffdf6}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+body{font-family:Nunito,system-ui,sans-serif;color:#fdf3e1;background:var(--plum);overflow-x:hidden;line-height:1.5}
+#stage{position:fixed;inset:0;perspective:1000px;overflow:hidden;z-index:0;background:linear-gradient(#f2b27a 0%,#d9788a 32%,#6d4f87 62%,#2a2144 100%)}
+#scene{position:absolute;inset:0;transform:scale(1.12)}
+#night{position:absolute;inset:0;background:linear-gradient(#0b1020,#1d1b3d 60%,#2a2144);opacity:0}
+#stars{position:absolute;inset:0 0 40% 0;opacity:0}
+#stars i{position:absolute;width:2px;height:2px;border-radius:50%;background:#fff}
+#sun{position:absolute;left:16%;top:34%;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,#fff3c4 0 30%,#ffb455 60%,rgba(255,150,80,0) 72%)}
+#moon{position:absolute;right:12%;top:9%;width:70px;height:70px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fffbe6,#e6e0c0 60%,#c9c3a2);box-shadow:0 0 50px 14px rgba(255,248,210,.35);opacity:0}
+.cloud{position:absolute;width:240px;height:64px;border-radius:50%;background:rgba(255,235,220,.4);filter:blur(16px);animation:drift 100s linear infinite}
+.layer{position:absolute;left:-5%;width:110%;bottom:0;will-change:transform}
+.layer svg{display:block;width:100%;height:auto}
+.fly{position:absolute;width:6px;height:6px;border-radius:50%;background:var(--fly);box-shadow:0 0 12px 4px rgba(228,240,107,.7)}
+#embers{position:absolute;left:82.5%;bottom:25%;width:0;height:0}
+.ember{position:absolute;left:0;bottom:0;width:5px;height:5px;border-radius:50%;background:#ffb347;box-shadow:0 0 8px 2px rgba(255,140,40,.8);opacity:0}
+.shoot{position:absolute;width:110px;height:2px;background:linear-gradient(90deg,transparent,#fff);rotate:28deg;opacity:0}
+.spark{position:fixed;width:7px;height:7px;margin:-3px;border-radius:50%;background:var(--fly);box-shadow:0 0 10px 3px rgba(228,240,107,.8);pointer-events:none;z-index:9}
+main{position:relative;z-index:1}
+section,header{padding:clamp(3rem,9vh,6rem) 1.2rem;max-width:900px;margin:0 auto}
+header{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:1rem}
+.from{font-weight:600;font-size:1.05rem;text-shadow:0 1px 8px rgba(0,0,0,.4)}
+.pill{background:rgba(42,33,68,.7);border:2px dashed var(--fly);color:var(--fly);padding:.3rem .9rem;border-radius:999px;font-weight:700;font-size:.95rem}
+h1{font-family:'Caveat Brush',cursive;font-weight:400;font-size:clamp(3.4rem,13vw,8rem);line-height:1;color:#fff4dc;animation:glow 4s ease-in-out infinite}
+h1 span{display:inline-block;cursor:default}
+.tag{font-size:1.15rem;max-width:36ch;text-shadow:0 1px 10px rgba(0,0,0,.5)}
+.hint{font-size:.95rem;opacity:.9}
+.env{position:relative;width:min(88vw,420px);aspect-ratio:7/5;perspective:900px;cursor:pointer;margin-top:.6rem;background:none;border:0;display:block;color:inherit;filter:drop-shadow(0 18px 24px rgba(0,0,0,.45));animation:bob 3.2s ease-in-out infinite}
+.env:focus-visible,.go:focus-visible,summary:focus-visible{outline:3px solid var(--fly);outline-offset:3px}
+.env>*{position:absolute;left:0;width:100%}
+.back{top:0;height:100%;background:var(--kraft2);border-radius:6px;z-index:0}
+.note{left:5%!important;width:90%!important;top:6%;height:80%;background:var(--paper);border-radius:3px;z-index:1;background-image:repeating-linear-gradient(transparent 0 17px,#cfe0f5 17px 18px)}
+.pocket{bottom:0;height:100%;background:var(--kraft);clip-path:polygon(0 0,50% 54%,100% 0,100% 100%,0 100%);z-index:2;border-radius:6px}
+.flap{top:0;height:54%;background:#c99965;clip-path:polygon(0 0,100% 0,50% 100%);transform-origin:top;z-index:3}
+.seal{z-index:4;top:38%!important;left:calc(50% - 26px)!important;width:52px!important;height:52px;border-radius:50%;background:#c2412d;display:grid;place-items:center;font-size:1.5rem;box-shadow:inset 0 -3px 0 rgba(0,0,0,.25)}
+.addr{z-index:4;bottom:12%;text-align:center;font-family:Kalam,cursive;color:#3a2a14;font-size:1.15rem;pointer-events:none}
+.tape{z-index:5;top:-10px;left:36%!important;width:28%!important;height:26px;background:rgba(228,240,107,.75);transform:rotate(-4deg)}
+#paperWrap{padding-top:2rem}
+#paper{position:relative;background:var(--paper);color:var(--ink);font-family:Kalam,cursive;font-size:clamp(1.1rem,2.6vw,1.3rem);line-height:36px;padding:36px clamp(1.2rem,6vw,4rem) 24px clamp(2.8rem,9vw,6rem);border-radius:4px;box-shadow:0 30px 60px rgba(0,0,0,.5);background-image:linear-gradient(90deg,transparent clamp(2.2rem,7.5vw,5rem),#e88 0 calc(clamp(2.2rem,7.5vw,5rem) + 2px),transparent 0),repeating-linear-gradient(transparent 0 35px,#cfe0f5 35px 36px);transform:rotate(-.6deg)}
+#paper p{margin-bottom:36px}
+.greet{font-size:1.5em;font-weight:700}
+.hl{position:relative;isolation:isolate}
+.hl i{position:absolute;left:0;bottom:2px;height:.55em;width:100%;background:rgba(228,240,107,.8);z-index:-1;transform-origin:left;transform:scaleX(0)}
+.sign{font-size:1.5em;font-weight:700;margin-bottom:0!important}
+.pin{position:absolute;top:-14px;left:50%;width:30px;height:30px;border-radius:50%;background:#c2412d;box-shadow:0 6px 8px rgba(0,0,0,.35),inset -4px -4px 0 rgba(0,0,0,.2)}
+h2{font-family:'Caveat Brush',cursive;font-weight:400;font-size:clamp(2.2rem,6vw,3.4rem);margin-bottom:.4rem;text-shadow:0 2px 14px rgba(0,0,0,.5)}
+.lead{margin-bottom:1.2rem;max-width:52ch;text-shadow:0 1px 8px rgba(0,0,0,.6)}
+.tl{position:relative;padding:0 0 0 2.8rem;margin:0 0 1rem}
+.tl::before,.tl .line{content:"";position:absolute;left:.95rem;top:.5rem;bottom:.5rem;width:3px;border-radius:2px;background:rgba(255,244,220,.25)}
+.tl .line{bottom:auto;height:0;background:linear-gradient(var(--fly),var(--ember))}
+.tl li{list-style:none;position:relative;margin-bottom:1rem;background:rgba(42,33,68,.74);backdrop-filter:blur(6px);border:2px solid rgba(255,244,220,.25);border-radius:14px;padding:.7rem 1.1rem;opacity:0}
+.tl .dot{position:absolute;left:-2.75rem;top:.6rem;width:2.1rem;height:2.1rem;border-radius:50%;background:var(--fly);display:grid;place-items:center;font-size:1rem;box-shadow:0 0 14px rgba(228,240,107,.6)}
+.tl small{opacity:.8;font-weight:600}
+.tl h3{font-family:'Caveat Brush',cursive;font-weight:400;font-size:1.7rem;line-height:1.1;color:var(--fly)}
+.tl p{margin:0}
+.tl .end{border-color:var(--ember)}.tl .end .dot{background:var(--ember)}
+.faq{display:grid;gap:.6rem}
+.faq details{background:rgba(42,33,68,.72);backdrop-filter:blur(6px);border:2px solid rgba(255,244,220,.3);border-radius:14px;padding:.8rem 1.1rem}
+.faq summary{cursor:pointer;font-weight:700;list-style:none;display:flex;gap:1rem}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";margin-left:auto;font-size:1.4rem;color:var(--fly)}
+.faq details[open] summary::after{content:"\2212"}
+.dc{padding:.6rem 0 .2rem;max-width:62ch}
+.go{display:inline-block;text-decoration:none;font:inherit;font-weight:800;font-size:1.2rem;padding:.9rem 1.8rem;border:0;border-radius:999px;color:#fff;cursor:pointer;background:linear-gradient(110deg,var(--moss) 30%,#5c9c73 50%,var(--moss) 70%);background-size:200% 100%;animation:shim 3s linear infinite,ring 2s ease-out infinite}
+.ticket{background:var(--paper);color:var(--plum);border-radius:14px;padding:2rem 2.2rem;display:flex;gap:1.4rem;flex-wrap:wrap;align-items:center;justify-content:space-between;box-shadow:0 20px 40px rgba(0,0,0,.45);font-weight:600;border-left:14px dotted var(--ember)}
+.ticket b{font-family:'Caveat Brush',cursive;font-weight:400;font-size:2rem;display:block;line-height:1.1}
+.ticket .go{font-size:1.4rem;padding:1.1rem 2.4rem}
+#done{margin-top:1rem;font-size:1.2rem;min-height:2rem;text-shadow:0 1px 8px rgba(0,0,0,.6)}
+#join h2{font-size:clamp(2.8rem,8vw,4.4rem)}
+.fab{position:fixed;top:.8rem;right:.8rem;z-index:8;background:var(--fly);color:var(--plum);font-weight:800;text-decoration:none;padding:.5rem 1rem;border-radius:999px;animation:ring 2s ease-out infinite}
+.pc{position:fixed;pointer-events:none;z-index:9;font-weight:800;font-size:1.3rem;color:var(--fly);text-shadow:0 0 8px rgba(0,0,0,.6)}
+footer{position:relative;z-index:1;text-align:center;padding:3rem 1rem 4rem;font-family:Kalam,cursive;text-shadow:0 1px 8px rgba(0,0,0,.7)}
+@keyframes bob{0%,100%{translate:0 0}50%{translate:0 -7px}}
+@keyframes glow{0%,100%{text-shadow:0 4px 0 rgba(42,33,68,.5),0 0 30px rgba(255,154,60,.35)}50%{text-shadow:0 4px 0 rgba(42,33,68,.5),0 0 60px rgba(255,190,90,.8)}}
+@keyframes shim{to{background-position:-200% 0}}
+@keyframes ring{0%{box-shadow:0 5px 0 #17281f,0 0 0 0 rgba(228,240,107,.7)}100%{box-shadow:0 5px 0 #17281f,0 0 0 18px rgba(228,240,107,0)}}
+@keyframes tw{0%,100%{opacity:.15}50%{opacity:1}}
+@keyframes drift{from{left:-25%}to{left:110%}}
+[hidden]{display:none!important}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div id="stage"><div id="scene">
+  <div id="night"></div><div id="stars"></div><div id="sun"></div><div id="moon"></div>
+  <div class="cloud" style="top:12%"></div><div class="cloud" style="top:24%;width:300px;animation-duration:130s;animation-delay:-60s"></div>
+  <div class="layer" data-d=".2"><svg viewBox="0 0 1200 300"><path d="M0 300V190l110-80 90 55 150-120 150 140 110-65 160 105 120-85 150 95 160-80V300z" fill="#7c5f8f" opacity=".85"/></svg></div>
+  <div class="layer" data-d=".55"><svg viewBox="0 0 1200 300"><path d="M0 300V210l160-95 130 85 170-130 190 160 140-95 150 105 260-125V300z" fill="#463f6b"/></svg></div>
+  <div class="layer" data-d="1.1"><svg viewBox="0 0 1200 280">
+    <defs><radialGradient id="gl"><stop offset="0" stop-color="#ffb347" stop-opacity=".85"/><stop offset="1" stop-color="#ffb347" stop-opacity="0"/></radialGradient>
+    <symbol id="pine" viewBox="0 0 40 80"><path d="M20 0l15 28H26l12 24H27l12 24H1l12-24H2l12-24H5z" fill="#233a30"/><rect x="18" y="74" width="4" height="6" fill="#3a2a1a"/></symbol></defs>
+    <path d="M0 280V160Q300 118 600 158T1200 138V280z" fill="#1c2f27"/>
+    <use href="#pine" x="20" y="70" width="70" height="140"/><use href="#pine" x="95" y="110" width="50" height="100"/><use href="#pine" x="1070" y="60" width="80" height="160"/><use href="#pine" x="1140" y="100" width="55" height="110"/>
+    <polygon points="790,205 865,112 940,205" fill="#e0834f"/><polygon points="865,112 892,205 836,205" fill="#ffd58a"/>
+    <circle cx="990" cy="190" r="60" fill="url(#gl)"/>
+    <g id="fire" transform="translate(990 206)"><path d="M0 0c-12-16 0-24-3-40 12 9 19 24 9 40z" fill="#ff8a2b"/><path d="M0 0c-6-9 0-13-1-22 7 5 10 13 5 22z" fill="#ffe27a"/><rect x="-16" y="0" width="34" height="5" rx="2" fill="#4a3220"/></g>
+  </svg><div id="embers"></div></div>
+</div></div>
+<a class="fab" href="#join">Interested?</a>
+<main>
+<header>
+  <p class="from">The Programmers Club at AIKTC wrote you a letter</p>
+  <p class="pill">An idea we are testing. Not confirmed yet.</p>
+  <h1 id="title" aria-label="Camp Portfolio">Camp Portfolio</h1>
+  <p class="tag">A vacation-long camp to build the portfolio you keep putting off. Ten people, one mentor, one website that is yours.</p>
+  <button class="env" id="env" aria-label="Open the envelope">
+    <div class="back"></div><div class="note"></div><div class="pocket"></div><div class="flap" id="flap"></div>
+    <div class="seal" id="seal">🏕️</div><div class="addr">For: future camper</div><div class="tape"></div>
+  </button>
+  <p class="hint" id="hint">Tap the envelope to open it</p>
+</header>
+
+<section id="paperWrap" hidden>
+  <article id="paper"><span class="pin"></span>
+    <p class="greet">Dear future camper,</p>
+    <p class="ln">Someday soon, someone will ask for your portfolio, and you'll send a GitHub link and a prayer. You've built real things. Nobody can see them. <span class="hl">It's time your work had a home.<i></i></span></p>
+    <p class="ln">We also know you'd like to sleep through most of the break. Fair. Plan on that, too. Camp Portfolio is for people who mean to start, and then around day nine haven't.</p>
+    <p class="ln">That's why it's a camp, not a course. You get nine other people you help choose, plus a mentor. <span class="hl">Someone notices when you go quiet, someone cheers when you ship.<i></i></span> A site you'd drop alone is a lot harder to drop when nine people are waiting to see it.</p>
+    <p class="ln">It isn't confirmed. If enough of you say yes, we'll make it happen. Two minutes, no commitment.</p>
+    <p class="ln" style="text-align:center"><a class="go formlink" href="#" target="_blank" rel="noopener">Count me in</a></p>
+    <p class="ln sign">Hoping to see you at camp,<br>The Programmers Club</p>
+  </article>
+</section>
+
+<section id="timeline">
+  <h2>From launch day to showcase day</h2>
+  <p class="lead">The number of weeks will follow the length of your break.</p>
+  <ul class="tl" id="tl"><span class="line"></span>
+    <li><span class="dot">🎒</span><small>Before the break</small><h3>Launch Day</h3><p>A portfolio bootcamp: LinkedIn, GitHub, branding, how recruiters read your site, and your first version online.</p></li>
+    <li><span class="dot">🤝</span><small>End of launch day</small><h3>Find Your Camp</h3><p>Answer a short quiz: how active you like a camp, how you like to chat, your interests and hobbies. AI suggests people who fit. You meet them and confirm, or ask for a rematch.</p></li>
+    <li><span class="dot">🛠️</span><small>During the break</small><h3>Build, together</h3><p>One small mission and one short check-in a week, with your camp. Plan, design, build, write up, ship, polish.</p></li>
+    <li class="end"><span class="dot">🎤</span><small>After the break</small><h3>Showcase Day</h3><p>Everyone presents their live site for a few minutes, in front of everyone. The audience comments on each portfolio live and picks a top 10. The top picks get awarded.</p></li>
+  </ul>
+</section>
+
+<section>
+  <h2>Questions</h2>
+  <div class="faq">
+   <details><summary>Is this definitely happening?</summary><div class="dc">No. This is an interest check. We'll decide based on how many people want it and how many mentors we can gather.</div></details>
+   <details><summary>Who is it for?</summary><div class="dc">Mainly second-year students heading into the break after semester three. Other years can say they're curious in the form.</div></details>
+   <details><summary>How do camps get formed?</summary><div class="dc">A short quiz, then AI suggests people with a similar camp style. You meet them, then privately confirm or ask for a rematch. The AI recommends, you decide, and organisers finalise the groups.</div></details>
+   <details><summary>Who judges the showcase?</summary><div class="dc">You do. Everyone presents, everyone leaves comments, and each person picks a top 10 (not themselves). Picks stay private until the end so popularity doesn't steer the room.</div></details>
+   <details><summary>What if my web development isn't strong yet?</summary><div class="dc">That's okay. Everyone picks their own stack and style. You'll have resources, peer feedback and a mentor.</div></details>
+   <details><summary>How much time per week?</summary><div class="dc">Not fixed yet. The form asks, and your answers will shape how big each mission is.</div></details>
+  </div>
+</section>
+
+<section id="join">
+  <h2>Would you come?</h2>
+  <div class="ticket"><div><b>The interest form</b>Two minutes. No commitment.</div><a class="go formlink" href="#" target="_blank" rel="noopener">Count me in</a></div>
+  <p id="done"></p>
+</section>
+</main>
+<footer>An idea from the Programmers Club, AIKTC. Nothing here is confirmed yet.</footer>
+
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const RM=matchMedia('(prefers-reduced-motion:reduce)').matches;
+const FORM_URL='https://forms.gle/m6UzoBmmd2YceqXL8'; // placeholder: paste your real Google Form link
+const small=innerWidth<700;
+
+/* title */
+$('#title').innerHTML=[...'Camp Portfolio'].map(c=>`<span>${c===' '?'&nbsp;':c}</span>`).join('');
+anime({targets:'#title span',translateY:[70,0],opacity:[0,1],rotate:(e,i)=>[-18+(i*11)%36,((i*7)%7)-3],delay:anime.stagger(50,{start:200}),duration:900,easing:'easeOutBack'});
+$$('#title span').forEach(s=>s.addEventListener('mouseenter',()=>anime({targets:s,translateY:[0,-18,0],duration:500,easing:'easeOutQuad'})));
+anime({targets:'#env',opacity:[0,1],delay:1100,duration:900,easing:'easeOutCubic'});
+
+/* scene */
+const st=$('#stars');for(let i=0;i<70;i++){const s=document.createElement('i');s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';s.style.animation=`tw ${2+Math.random()*3}s ${Math.random()*3}s infinite`;st.appendChild(s)}
+let mx=0,my=0,cx=0,cy=0,sp=0;const L=$$('.layer');
+if(!RM){
+  for(let i=0;i<(small?8:22);i++){const f=document.createElement('div');f.className='fly';f.style.left=Math.random()*100+'%';f.style.top=45+Math.random()*50+'%';$('#scene').appendChild(f);
+    anime({targets:f,translateX:()=>anime.random(-70,70),translateY:()=>anime.random(-60,60),opacity:[.1,1],duration:()=>anime.random(2500,5000),delay:anime.random(0,2000),direction:'alternate',loop:true,easing:'easeInOutSine'})}
+  anime({targets:'#fire path:nth-child(1)',scaleY:[1,1.18],scaleX:[1,.9],duration:380,direction:'alternate',loop:true,easing:'easeInOutSine'});
+  anime({targets:'#fire path:nth-child(2)',scaleY:[1,1.3],duration:260,direction:'alternate',loop:true,easing:'easeInOutSine'});
+  const em=$('#embers');for(let i=0;i<(small?7:16);i++){const e=document.createElement('i');e.className='ember';em.appendChild(e);
+    anime({targets:e,translateY:()=>[0,-anime.random(90,260)],translateX:()=>anime.random(-40,50),opacity:[{value:1,duration:300},{value:0,duration:1800}],scale:[1,.2],duration:()=>anime.random(1800,3400),delay:anime.random(0,3000),loop:true,easing:'easeOutSine'})}
+  let last=0;addEventListener('pointermove',e=>{if(e.pointerType==='touch')return;const n=performance.now();if(n-last<45)return;last=n;
+    const k=document.createElement('i');k.className='spark';k.style.left=e.clientX+'px';k.style.top=e.clientY+'px';document.body.appendChild(k);
+    anime({targets:k,translateY:anime.random(10,40),translateX:anime.random(-20,20),opacity:[.9,0],scale:[1,.2],duration:800,easing:'easeOutQuad',complete:()=>k.remove()})});
+  setInterval(()=>{if(sp<.3)return;const h=document.createElement('div');h.className='shoot';h.style.left=Math.random()*60+'%';h.style.top=Math.random()*25+'%';$('#scene').appendChild(h);
+    anime({targets:h,translateX:420,translateY:220,opacity:[{value:1,duration:150},{value:0,duration:550}],duration:700,easing:'easeInQuad',complete:()=>h.remove()})},3500);
+}
+addEventListener('pointermove',e=>{mx=e.clientX/innerWidth-.5;my=e.clientY/innerHeight-.5});
+addEventListener('scroll',()=>{sp=scrollY/Math.max(1,document.body.scrollHeight-innerHeight)});
+(function f(){
+  if(!RM){cx+=(mx-cx)*.06;cy+=(my-cy)*.06}
+  L.forEach(l=>{const d=+l.dataset.d;l.style.transform=`translate3d(${-cx*d*60}px,${-cy*d*24-sp*d*50}px,${d*70-70}px)`});
+  $('#scene').style.transform=`scale(1.12) rotateY(${cx*5}deg) rotateX(${-cy*3}deg)`;
+  $('#night').style.opacity=Math.min(.95,sp*1.5);$('#stars').style.opacity=Math.max(0,sp*1.6-.15);
+  $('#sun').style.transform=`translateY(${sp*320}px)`;$('#sun').style.opacity=Math.max(0,1-sp*1.8);$('#moon').style.opacity=Math.max(0,Math.min(1,sp*1.8-.3));
+  requestAnimationFrame(f);
+})();
+
+/* envelope */
+let opened=false;
+$('#env').addEventListener('click',()=>{
+  if(opened)return;opened=true;$('#hint').textContent='';
+  anime.timeline({easing:'easeInOutQuad'})
+   .add({targets:'#seal',scale:[1,0],duration:250})
+   .add({targets:'#flap',rotateX:[0,90],duration:300})
+   .add({targets:'#flap',rotateX:[90,180],duration:300,begin:()=>$('#flap').style.zIndex=0})
+   .add({targets:'.note',translateY:[0,-80],duration:600,easing:'easeOutCubic'})
+   .add({targets:'#env',translateY:[0,140],opacity:[1,0],duration:700,delay:350,complete:showLetter});
+});
+function showLetter(){
+  $('#env').style.display='none';
+  const w=$('#paperWrap');w.hidden=false;w.scrollIntoView({behavior:'smooth',block:'start'});
+  anime.timeline({easing:'easeOutCubic'})
+   .add({targets:'#paper',translateY:[80,0],opacity:[0,1],rotate:[-4,-.6],duration:900})
+   .add({targets:'.ln,.greet',opacity:[0,1],translateX:[-14,0],delay:anime.stagger(260),duration:600},'-=300')
+   .add({targets:'.hl i',scaleX:[0,1],delay:anime.stagger(500),duration:700,easing:'easeInOutQuad'},'-=900');
+}
+
+/* timeline */
+new IntersectionObserver((en,o)=>{if(!en[0].isIntersecting)return;o.disconnect();
+  anime({targets:'#tl .line',height:$('#tl').offsetHeight-24,duration:RM?0:2200,easing:'easeInOutSine'});
+  anime({targets:'#tl li',opacity:[0,1],translateX:RM?0:[-24,0],delay:RM?0:anime.stagger(380),duration:RM?0:600,easing:'easeOutCubic'});
+  anime({targets:'#tl .dot',scale:RM?1:[0,1],delay:RM?0:anime.stagger(380),duration:RM?0:600,easing:'easeOutBack'});
+},{threshold:.2}).observe($('#tl'));
+
+/* faq */
+$$('details').forEach(d=>d.addEventListener('toggle',()=>{if(d.open&&!RM)anime({targets:d.querySelector('.dc'),opacity:[0,1],translateY:[-8,0],duration:350,easing:'easeOutCubic'})}));
+
+/* interest form */
+$$('.formlink').forEach(a=>{a.href=FORM_URL;a.addEventListener('click',e=>{
+  const r=e.currentTarget.getBoundingClientRect(),x=r.left+r.width/2,y=r.top+r.height/2,g=['<','/>','{ }','#','★','♥','✦','</>'];
+  const els=Array.from({length:30},(_,i)=>{const s=document.createElement('span');s.className='pc';s.textContent=g[i%g.length];s.style.left=x+'px';s.style.top=y+'px';document.body.appendChild(s);return s});
+  if(!RM)anime({targets:els,translateX:()=>anime.random(-280,280),translateY:()=>[0,anime.random(-340,-90)],rotate:()=>anime.random(-200,200),opacity:[1,0],duration:()=>anime.random(900,1700),easing:'easeOutCubic',complete:()=>els.forEach(s=>s.remove())});else els.forEach(s=>s.remove());
+  $('#done').textContent='Thank you. The form opened in a new tab. Your answer is how we decide.';
+})});
+</script>
+</body>
+</html>
